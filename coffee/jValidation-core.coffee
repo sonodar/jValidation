@@ -25,12 +25,7 @@ class ValidationInfo
 	# JSON文字列出力
 	toString: ->
 		"""
-		{
-			fieldName:#{@fieldName},
-			msg:#{@msg},
-			funcName:#{@funcName},
-			params:#{@params}
-		}
+		{fieldName:#{@fieldName}, msg:#{@msg}, funcName:#{@funcName}, params:#{@params}}
 		"""
 
 #********************************************************************************************
@@ -46,11 +41,7 @@ class ValidatorManager
 	# JSON文字列出力
 	toString: ->
 		"""
-		{
-			formName:#{@form.name},
-			formAction:#{@form.action},
-			validations: [#{@validations.join(',')}]
-		}
+		{formName:#{@form.name}, formAction:#{@form.action}, validations: [#{@validations.join(',')}]}
 		"""
 
 	#========================================================================================

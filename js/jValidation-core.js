@@ -23,7 +23,7 @@
     }
 
     ValidationInfo.prototype.toString = function() {
-      return "{\n	fieldName:" + this.fieldName + ",\n	msg:" + this.msg + ",\n	funcName:" + this.funcName + ",\n	params:" + this.params + "\n}";
+      return "{fieldName:" + this.fieldName + ", msg:" + this.msg + ", funcName:" + this.funcName + ", params:" + this.params + "}";
     };
 
     return ValidationInfo;
@@ -39,7 +39,7 @@
     }
 
     ValidatorManager.prototype.toString = function() {
-      return "{\n	formName:" + this.form.name + ",\n	formAction:" + this.form.action + ",\n	validations: [" + (this.validations.join(',')) + "]\n}";
+      return "{formName:" + this.form.name + ", formAction:" + this.form.action + ", validations: [" + (this.validations.join(',')) + "]}";
     };
 
     ValidatorManager.prototype.add = function(fieldName, msg, funcName, params) {
