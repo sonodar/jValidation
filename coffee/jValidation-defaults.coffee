@@ -353,7 +353,7 @@ ValidatorManager.registerValidation 'CompareNumber', (field, msg, params) ->
 	# どちらかが未入力の場合は検証OKとする
 	if @isEmtpyField field or @isEmtpyField targetName then return ''
 
-	valule = $(@form.elements[field]).val()
+	value = $(@form.elements[field]).val()
 	targetValue = $(@form.elements[targetName]).val()
 
 	# どちらかが数値以外の場合は検証OKとする
@@ -386,11 +386,11 @@ ValidatorManager::addLength = (fieldName, msg, min, max) -> @add fieldName, msg,
 ValidatorManager::addMaxLength = (fieldName, msg, max) -> @add fieldName, msg, 'MaxLength', new Number max
 ValidatorManager::addMinLength = (fieldName, msg, min) -> @add fieldName, msg, 'MinLength', new Number min
 ValidatorManager::addDate = (fieldName, msg) -> @add fieldName, msg, 'Date'
-ValidatorManager::addDatePart = (msg, year, month, day) -> @add year, msg, 'DatePart', {month: month, day: day}
+ValidatorManager::addDatePart = (msg, year, month, day) -> @add year, msg, 'DatePart', {month, day}
 ValidatorManager::addMask = (fieldName, msg, pattern) -> @add fieldName, msg, 'Mask', pattern
 ValidatorManager::addEmail = (fieldName, msg) -> @add fieldName, msg, 'Email'
 ValidatorManager::addEquals = (fieldName, msg, targetName) -> @add fieldName, msg, 'Equals', targetName
 ValidatorManager::addRequiredRefs = (fieldName, msg, prerequisite, nonPrerequisite, checkExists = true) ->
-	@add fieldName, msg, 'RequiredRefs', {prerequisite: prerequisite, nonPrerequisite: nonPrerequisite, checkExists: checkExists}
+	@add fieldName, msg, 'RequiredRefs', {prerequisite, nonPrerequisite, checkExists}
 ValidatorManager::addCompareNumber = (fieldName, msg, targetName, compareType) ->
-	@add fieldName, msg, 'CompareNumber', {targetName: targetName, compareType: compareType}
+	@add fieldName, msg, 'CompareNumber', {targetName, compareType}
