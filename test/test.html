@@ -3,7 +3,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Sample Test File</title>
-	<script language="JavaScript" type="text/javascript" src="../jsunit/app/jsUnitCore.js"></script>
+	<script language="JavaScript" type="text/javascript" src="jsunit/app/jsUnitCore.js"></script>
 	<script language="JavaScript" type="text/javascript" src="../js/jValidation-core.js"></script>
 	<script language="JavaScript" type="text/javascript" src="../js/jValidation-defaults.js"></script>
 	<script language="JavaScript" type="text/javascript">
@@ -16,6 +16,10 @@
 	  assertEquals(info.funcName, "testFunc");
 	  assertEquals(info.params.hoge, "hoge");
 	  assertEquals(info.params.test, "test");
+	}
+
+	function testValidationInfo() {
+	  assertTrue("");
 	}
 	
 	</script>
