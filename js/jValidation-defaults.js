@@ -17,78 +17,96 @@ ValidatorUtil = (function() {
   function ValidatorUtil() {}
 
   ValidatorUtil.isHalfInt = function(value, sign) {
-    return value.toString().test(sign ? /^[-\+]?[0-9]+$/ : /^[0-9]+$/);
+    var pattern;
+    pattern = sign ? /^[-\+]?[0-9]+$/ : /^[0-9]+$/;
+    return pattern.test(value.toString());
   };
 
   ValidatorUtil.isHalfAlph = function(value) {
-    return !value.toString().test(/[^a-zA-Z]/i);
+    return !/[^a-zA-Z]/.test(value.toString());
   };
 
   ValidatorUtil.isHalfAlphInt = function(value) {
-    return !value.toString().test(/[^a-zA-Z0-9]/i);
+    return !/[^a-zA-Z0-9]/.test(value.toString());
   };
 
-  ValidatorUtil.isHalfNum = function(value) {
+  ValidatorUtil.isHalfNum = function(value, sign) {
     var pattern;
     if (sign) {
       pattern = /^[-\+]?[0-9]+([\.,][0-9]*)?$|^[\.,][0-9]+$/;
     } else {
       pattern = /^[0-9]+([\.,][0-9]*)?$|^[\.,][0-9]+$/;
     }
-    return value.toString().test(pattern);
+    return pattern.test(value.toString());
   };
 
   ValidatorUtil.isRange = function(value, min, max) {
-    return (min <= value && value <= max);
+    _min;
+
+    _max;
+
+    _val;
+
+    var _max, _min, _val;
+    if (typeof value === "string") {
+      _min = min.toString();
+      _max = max.toString();
+      _val = value.toString();
+    } else if (!isNaN(value)) {
+      _min = new Number(min);
+      _max = new Number(max);
+      _val = new Number(value);
+    } else {
+      return (min <= value && value <= max);
+    }
+    if (_min > _max) {
+      throw new "ValidatorUtil#isRange min<=maxとなるように引数を指定してください";
+    }
+    return (_min <= _val && _val <= _max);
   };
 
   ValidatorUtil.isEmail = function(value, strict) {
-    if (strict) {
-      return value.toString().test(/^(?:(?:(?:(?:[a-zA-Z0-9_!#\$\%&'*+\/=?\^`{}~|\-]+)(?:\.(?:[a-zA-Z0-9_!#\$\%&'*+\/=?\^`{}~|\-]+))*)|(?:"(?:\\[^\r\n]|[^\\"])*")))\@(?:(?:(?:(?:[a-zA-Z0-9_!#\$\%&'*+\/=?\^`{}~|\-]+)(?:\.(?:[a-zA-Z0-9_!#\$\%&'*+\/=?\^`{}~|\-]+))*)|(?:\[(?:\\\S|[\x21-\x5a\x5e-\x7e])*\])))$/);
-    } else {
-      return value.toString().test(/^([-!#-\\'*+\\\/-9=?^-~]+(\\.[-!#-\\'*+\\\/-9=?^-~]+)*|"([]-~!#-[]|\\\\[-~])*")@[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?)*\\.([a-z]{2,4}|museum)$/i);
-    }
+    var pattern;
+    pattern = strict ? /(?:(?:[A-Za-z0-9!#$%&'*+\-\/=?^_`{|}~]+(?:\.[A-Za-z0-9!#$%&'*+\-\/=?^_`{|}~]+)*)|(?:"(?:[\x21\x23-\x5B\x5D-\x7E]|(?:\\(?:[\x21-\x7E]|[\x20\x09])))*")|(?:(?:(?:[A-Za-z0-9!#$%&'*+\-\/=?^_`{|}~]+)|(?:"(?:[\x21\x23-\x5B\x5D-\x7E]|(?:\\(?:[\x21-\x7E]|[\x20\x09])))*"))(?:\.(?:(?:[A-Za-z0-9!#$%&'*+\-\/=?^_`{|}~]+)|(?:"(?:[\x21\x23-\x5B\x5D-\x7E]|(?:\\(?:[\x21-\x7E]|[\x20\x09])))*")))*))@(?:(?:[A-Za-z0-9!#$%&'*+\-\/=?^_`{|}~]+(?:\.[A-Za-z0-9!#$%&'*+\-\/=?^_`{|}~]+)*)|(?:(?:[A-Za-z0-9!#$%&'*+\-\/=?^_`{|}~]+)(?:\.(?:[A-Za-z0-9!#$%&'*+\-\/=?^_`{|}~]+))*))/i : /^[0-9a-z\-_.!#$\%\&'*+\/=?^`\{\}\|~]+@[a-z\-]+(?:\.[a-z\-]+)\.[a-z\-]+$/i;
+    return pattern.test(value.toString());
   };
 
   ValidatorUtil.isDate = function(value) {
     var d, dateParts, dateStr, dd, mm, yyyy;
     dateStr = value.toString().replace(/^\s+|\s+$/g, '');
-    if (!dateStr.test(/^([0-9]{0,2}[0-9]{2}[\/]([1-9]|0[1-9]|1[0-2])[\/]([1-9]|0[1-9]|1[0-9]|2[0-9]|3[0-1]))|([0-9]{0,2}[0-9]{2}[-]([1-9]|0[1-9]|1[0-2])[-]([1-9]|0[1-9]|1[0-9]|2[0-9]|3[0-1]))$/)) {
+    if (!/^(?:([0-9]{0,2}[0-9]{2})[\/](0[1-9]|1[0-2]|[1-9])[\/](0[1-9]|1[0-9]|2[0-9]|3[0-1]|[1-9]))|(?:([0-9]{0,2}[0-9]{2})-(0[1-9]|1[0-2]|[1-9])-(0[1-9]|1[0-9]|2[0-9]|3[0-1]|[1-9]))|(?:([0-9]{0,2}[0-9]{2})年(0[1-9]|1[0-2]|[1-9])月(0[1-9]|1[0-9]|2[0-9]|3[0-1]|[1-9])日)$/.test(dateStr)) {
       return false;
     }
-    dateParts = dateStr.replace(/\-/g, '/').split('/');
+    dateParts = dateStr.replace(/[\-年月]/g, '/').replace(/日/, '').split('/');
     if (dateParts.length !== 3) {
       return false;
     }
-    yyyy = new Number(dateParts[0]);
-    mm = new Number(dateParts[1] - 1);
-    dd = new Number(dateParts[2]);
-    if (yyyy.length === 2) {
-      if (yyyy < 50) {
-        yyyy = '20' + yyyy;
-      } else {
-        yyyy = '19' + yyyy;
-      }
+    yyyy = dateParts[0] - 0;
+    mm = dateParts[1] - 0;
+    dd = dateParts[2] - 0;
+    if (dateParts[0].length === 2) {
+      yyyy = yyyy < 50 ? '20' + yyyy - 0 : '19' + yyyy - 0;
     }
-    d = new Date(yyyy, mm, dd);
-    return d.getFullYear() === yyyy && d.getMonth() === mm && d.getDate() === dd;
+    d = new Date(yyyy, mm - 1, dd);
+    return d.getFullYear() === yyyy && d.getMonth() + 1 === mm && d.getDate() === dd;
   };
 
   return ValidatorUtil;
 
 })();
 
-/* 検証メソッドを定義してValidatorManagerに登録する。
+/*
+検証メソッドを定義してValidateManagerに登録する。
 */
 
 
-ValidatorManager.registerValidation('Required', function(field, msg) {
+ValidateManager.registerValidation('Required', function(field, msg) {
   if (this.isEmtpyField(field)) {
     return msg;
   }
 });
 
-ValidatorManager.registerValidation('HalfInt', function(field, msg, sign) {
+ValidateManager.registerValidation('HalfInt', function(field, msg, sign) {
   if (this.isEmtpyField(field)) {
     return '';
   }
@@ -97,7 +115,7 @@ ValidatorManager.registerValidation('HalfInt', function(field, msg, sign) {
   }
 });
 
-ValidatorManager.registerValidation('HalfAlph', function(field, msg) {
+ValidateManager.registerValidation('HalfAlph', function(field, msg) {
   if (this.isEmtpyField(field)) {
     return '';
   }
@@ -106,7 +124,7 @@ ValidatorManager.registerValidation('HalfAlph', function(field, msg) {
   }
 });
 
-ValidatorManager.registerValidation('HalfAlphInt', function(field, msg) {
+ValidateManager.registerValidation('HalfAlphInt', function(field, msg) {
   if (this.isEmtpyField(field)) {
     return '';
   }
@@ -115,7 +133,7 @@ ValidatorManager.registerValidation('HalfAlphInt', function(field, msg) {
   }
 });
 
-ValidatorManager.registerValidation('HalfNum', function(field, msg, sign) {
+ValidateManager.registerValidation('HalfNum', function(field, msg, sign) {
   if (this.isEmtpyField(field)) {
     return '';
   }
@@ -124,12 +142,12 @@ ValidatorManager.registerValidation('HalfNum', function(field, msg, sign) {
   }
 });
 
-ValidatorManager.registerValidation('Range', function(field, msg, params) {
+ValidateManager.registerValidation('Range', function(field, msg, params) {
   var max, min, value;
   min = params.min;
   max = params.max;
   if (!(max != null) || isNaN(max || !(min != null) || isNaN(min))) {
-    throw "ValidatorManager#Range: min, maxには数値を指定してください。 {min=" + min + ", max=" + max + "}";
+    throw "ValidateManager#Range: min, maxには数値を指定してください。 {min=" + min + ", max=" + max + "}";
   }
   if (this.isEmtpyField(field)) {
     return '';
@@ -143,13 +161,13 @@ ValidatorManager.registerValidation('Range', function(field, msg, params) {
   }
 });
 
-ValidatorManager.registerValidation('Max', function(field, msg, max) {
+ValidateManager.registerValidation('Max', function(field, msg, max) {
   var value;
   if (!(max != null)) {
-    throw 'ValidatorManager#Max: maxを指定してください。';
+    throw 'ValidateManager#Max: maxを指定してください。';
   }
   if (isNaN(max)) {
-    throw "ValidatorManager#Max: maxには数値を指定してください。 max=" + max;
+    throw "ValidateManager#Max: maxには数値を指定してください。 max=" + max;
   }
   if (this.isEmtpyField(field)) {
     return '';
@@ -160,13 +178,13 @@ ValidatorManager.registerValidation('Max', function(field, msg, max) {
   }
 });
 
-ValidatorManager.registerValidation('Min', function(field, msg, min) {
+ValidateManager.registerValidation('Min', function(field, msg, min) {
   var value;
   if (!(min != null)) {
-    throw 'ValidatorManager#Min: minを指定してください。';
+    throw 'ValidateManager#Min: minを指定してください。';
   }
   if (isNaN(min)) {
-    throw "ValidatorManager#Min: minには数値を指定してください。 min=" + min;
+    throw "ValidateManager#Min: minには数値を指定してください。 min=" + min;
   }
   if (this.isEmtpyField(field)) {
     return '';
@@ -177,12 +195,12 @@ ValidatorManager.registerValidation('Min', function(field, msg, min) {
   }
 });
 
-ValidatorManager.registerValidation('Length', function(field, msg, params) {
+ValidateManager.registerValidation('Length', function(field, msg, params) {
   var max, min, strLength, _ref;
   min = params.min;
   max = params.max;
   if (!(max != null) || max <= 0 || isNaN(max || !(min != null) || min <= 0 || isNaN(min))) {
-    throw "ValidatorManager#Length: min, maxには1以上の整数を指定してください。 {min=" + min + ", max=" + max + "}";
+    throw "ValidateManager#Length: min, maxには1以上の整数を指定してください。 {min=" + min + ", max=" + max + "}";
   }
   if (this.isEmtpyField(field)) {
     return '';
@@ -193,10 +211,10 @@ ValidatorManager.registerValidation('Length', function(field, msg, params) {
   }
 });
 
-ValidatorManager.registerValidation('MaxLength', function(field, msg, max) {
+ValidateManager.registerValidation('MaxLength', function(field, msg, max) {
   var _ref;
   if (!(max != null) || max <= 0 || isNaN(max)) {
-    throw "ValidatorManager#MaxLength: maxには1以上の整数を指定してください。 max=" + max;
+    throw "ValidateManager#MaxLength: maxには1以上の整数を指定してください。 max=" + max;
   }
   if (this.isEmtpyField(field)) {
     return '';
@@ -206,10 +224,10 @@ ValidatorManager.registerValidation('MaxLength', function(field, msg, max) {
   }
 });
 
-ValidatorManager.registerValidation('MinLength', function(field, msg, min) {
+ValidateManager.registerValidation('MinLength', function(field, msg, min) {
   var _ref;
   if (!(min != null) || min <= 0 || isNaN(min)) {
-    throw "ValidatorManager#MinLength: minには1以上の整数を指定してください。 min=" + min;
+    throw "ValidateManager#MinLength: minには1以上の整数を指定してください。 min=" + min;
   }
   if (this.isEmtpyField(field)) {
     return '';
@@ -219,7 +237,7 @@ ValidatorManager.registerValidation('MinLength', function(field, msg, min) {
   }
 });
 
-ValidatorManager.registerValidation('Date', function(field, msg) {
+ValidateManager.registerValidation('Date', function(field, msg) {
   if (this.isEmtpyField(field)) {
     return '';
   }
@@ -228,12 +246,12 @@ ValidatorManager.registerValidation('Date', function(field, msg) {
   }
 });
 
-ValidatorManager.registerValidation('DatePart', function(year, msg, params) {
+ValidateManager.registerValidation('DatePart', function(year, msg, params) {
   var dateValue, day, month;
   month = params.month;
   day = params.day;
   if (!month || !day) {
-    throw 'ValidatorManager#DatePart: 月、日のフィールド名を指定してください。';
+    throw 'ValidateManager#DatePart: 月、日のフィールド名を指定してください。';
   }
   if (this.isEmtpyField(year || this.isEmtpyField(month || this.isEmtpyField(day)))) {
     return '';
@@ -246,9 +264,9 @@ ValidatorManager.registerValidation('DatePart', function(year, msg, params) {
   }
 });
 
-ValidatorManager.registerValidation('Mask', function(field, msg, pattern) {
+ValidateManager.registerValidation('Mask', function(field, msg, pattern) {
   if (!pattern) {
-    throw 'ValidatorManager#Mask: patternを指定してください。';
+    throw 'ValidateManager#Mask: patternを指定してください。';
   }
   if (this.isEmtpyField(field)) {
     return '';
@@ -258,7 +276,7 @@ ValidatorManager.registerValidation('Mask', function(field, msg, pattern) {
   }
 });
 
-ValidatorManager.registerValidation('Email', function(field, msg, strict) {
+ValidateManager.registerValidation('Email', function(field, msg, strict) {
   if (strict == null) {
     strict = false;
   }
@@ -270,24 +288,24 @@ ValidatorManager.registerValidation('Email', function(field, msg, strict) {
   }
 });
 
-ValidatorManager.registerValidation('Equals', function(field, msg, target) {
+ValidateManager.registerValidation('Equals', function(field, msg, target) {
   if (this.isEmtpyField(field)) {
     return '';
   }
   if (!target) {
-    throw "ValidatorManager#Equals: " + field + "と等価チェックを行うフィールド名を指定してください。";
+    throw "ValidateManager#Equals: " + field + "と等価チェックを行うフィールド名を指定してください。";
   }
   if ($(this.form.elements[field]).val() !== $(this.form.elements[target]).val()) {
     return msg;
   }
 });
 
-ValidatorManager.registerValidation('RequiredRefs', function(field, msg, params) {
+ValidateManager.registerValidation('RequiredRefs', function(field, msg, params) {
   var checkExists, elm, elmName, nonPrerequisite, prerequisite, _i, _j, _len, _len1, _ref;
   prerequisite = params.prerequisite;
   nonPrerequisite = params.nonPrerequisite;
   if (!(prerequisite != null) && !(nonPrerequisite != null)) {
-    throw 'ValidatorManager#RequiredRefs: prerequisite, nonPrerequisiteのいずれかを指定してください。';
+    throw 'ValidateManager#RequiredRefs: prerequisite, nonPrerequisiteのいずれかを指定してください。';
   }
   checkExists = (_ref = params.checkExists) != null ? _ref : true;
   if (prerequisite != null) {
@@ -296,7 +314,7 @@ ValidatorManager.registerValidation('RequiredRefs', function(field, msg, params)
       elm = this.form.elements[elmName];
       if (!(elm != null)) {
         if (checkExists) {
-          throw "ValidatorManager#RequiredRefs: " + elmName + "フィールドが見つかりません。";
+          throw "ValidateManager#RequiredRefs: " + elmName + "フィールドが見つかりません。";
         } else {
           continue;
         }
@@ -312,7 +330,7 @@ ValidatorManager.registerValidation('RequiredRefs', function(field, msg, params)
       elm = this.form.elements[elmName];
       if (!(elm != null)) {
         if (checkExists) {
-          throw "ValidatorManager#RequiredRefs: " + elmName + "フィールドが見つかりません。";
+          throw "ValidateManager#RequiredRefs: " + elmName + "フィールドが見つかりません。";
         } else {
           continue;
         }
@@ -347,17 +365,17 @@ CompareType = (function() {
 
 })();
 
-ValidatorManager.registerValidation('CompareNumber', function(field, msg, params) {
-  var compareType, targetName, targetValue, value, valule;
+ValidateManager.registerValidation('CompareNumber', function(field, msg, params) {
+  var compareType, targetName, targetValue, value;
   targetName = params.targetName;
   compareType = params.compareType;
   if (!(this.form.elements[targetName] != null)) {
-    throw "ValidatorManager#CompareNumber: " + this.form.name + "フォームに" + targetName + "フィールドが見つかりません。";
+    throw "ValidateManager#CompareNumber: " + this.form.name + "フォームに" + targetName + "フィールドが見つかりません。";
   }
   if (this.isEmtpyField(field || this.isEmtpyField(targetName))) {
     return '';
   }
-  valule = $(this.form.elements[field]).val();
+  value = $(this.form.elements[field]).val();
   targetValue = $(this.form.elements[targetName]).val();
   if (isNaN(value || isNaN(targetValue))) {
     return '';
@@ -392,90 +410,91 @@ ValidatorManager.registerValidation('CompareNumber', function(field, msg, params
   }
 });
 
-/* 登録した検証メソッドをフィールドに設定するためのショートカットメソッド
+/*
+登録した検証メソッドをフィールドに設定するためのショートカットメソッド
 */
 
 
-ValidatorManager.prototype.addRequired = function(fieldName, msg) {
+ValidateManager.prototype.addRequired = function(fieldName, msg) {
   return this.add(fieldName, msg, 'Required');
 };
 
-ValidatorManager.prototype.addHalfInt = function(fieldName, msg, sign) {
+ValidateManager.prototype.addHalfInt = function(fieldName, msg, sign) {
   if (sign == null) {
     sign = false;
   }
   return this.add(fieldName, msg, 'HalfInt', sign);
 };
 
-ValidatorManager.prototype.addHalfAlph = function(fieldName, msg) {
+ValidateManager.prototype.addHalfAlph = function(fieldName, msg) {
   return this.add(fieldName, msg, 'HalfAlph');
 };
 
-ValidatorManager.prototype.addHalfAlphInt = function(fieldName, msg) {
+ValidateManager.prototype.addHalfAlphInt = function(fieldName, msg) {
   return this.add(fieldName, msg, 'HalfAlphInt');
 };
 
-ValidatorManager.prototype.addHalfNum = function(fieldName, msg, sign) {
+ValidateManager.prototype.addHalfNum = function(fieldName, msg, sign) {
   if (sign == null) {
     sign = false;
   }
   return this.add(fieldName, msg, 'HalfNum', sign);
 };
 
-ValidatorManager.prototype.addRange = function(fieldName, msg, min, max) {
+ValidateManager.prototype.addRange = function(fieldName, msg, min, max) {
   return this.add(fieldName, msg, 'Range', {
     min: new Number(min),
     max: new Number(max)
   });
 };
 
-ValidatorManager.prototype.addMax = function(fieldName, msg, max) {
+ValidateManager.prototype.addMax = function(fieldName, msg, max) {
   return this.add(fieldName, msg, 'Max', new Number(max));
 };
 
-ValidatorManager.prototype.addMin = function(fieldName, msg, min) {
+ValidateManager.prototype.addMin = function(fieldName, msg, min) {
   return this.add(fieldName, msg, 'Min', new Number(mi));
 };
 
-ValidatorManager.prototype.addLength = function(fieldName, msg, min, max) {
+ValidateManager.prototype.addLength = function(fieldName, msg, min, max) {
   return this.add(fieldName, msg, 'Length', {
     min: new Number(min),
     max: new Number(max)
   });
 };
 
-ValidatorManager.prototype.addMaxLength = function(fieldName, msg, max) {
+ValidateManager.prototype.addMaxLength = function(fieldName, msg, max) {
   return this.add(fieldName, msg, 'MaxLength', new Number(max));
 };
 
-ValidatorManager.prototype.addMinLength = function(fieldName, msg, min) {
+ValidateManager.prototype.addMinLength = function(fieldName, msg, min) {
   return this.add(fieldName, msg, 'MinLength', new Number(min));
 };
 
-ValidatorManager.prototype.addDate = function(fieldName, msg) {
+ValidateManager.prototype.addDate = function(fieldName, msg) {
   return this.add(fieldName, msg, 'Date');
 };
 
-ValidatorManager.prototype.addDatePart = function(msg, year, month, day) {
+ValidateManager.prototype.addDatePart = function(msg, year, month, day) {
   return this.add(year, msg, 'DatePart', {
     month: month,
     day: day
   });
 };
 
-ValidatorManager.prototype.addMask = function(fieldName, msg, pattern) {
+ValidateManager.prototype.addMask = function(fieldName, msg, pattern) {
   return this.add(fieldName, msg, 'Mask', pattern);
 };
 
-ValidatorManager.prototype.addEmail = function(fieldName, msg) {
+ValidateManager.prototype.addEmail = function(fieldName, msg) {
   return this.add(fieldName, msg, 'Email');
 };
 
-ValidatorManager.prototype.addEquals = function(fieldName, msg, targetName) {
+ValidateManager.prototype.addEquals = function(fieldName, msg, targetName) {
   return this.add(fieldName, msg, 'Equals', targetName);
 };
 
-ValidatorManager.prototype.addRequiredRefs = function(fieldName, msg, prerequisite, nonPrerequisite, checkExists) {
+ValidateManager.prototype.addRequiredRefs = function(fieldName, msg, prerequisite, nonPrerequisite, checkExists) {
   if (checkExists == null) {
     checkExists = true;
   }
@@ -486,7 +505,7 @@ ValidatorManager.prototype.addRequiredRefs = function(fieldName, msg, prerequisi
   });
 };
 
-ValidatorManager.prototype.addCompareNumber = function(fieldName, msg, targetName, compareType) {
+ValidateManager.prototype.addCompareNumber = function(fieldName, msg, targetName, compareType) {
   return this.add(fieldName, msg, 'CompareNumber', {
     targetName: targetName,
     compareType: compareType

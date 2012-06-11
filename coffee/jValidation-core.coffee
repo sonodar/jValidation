@@ -29,9 +29,9 @@ class ValidationInfo
 		"""
 
 #********************************************************************************************
-# Validatorクラスを格納し、まとめて実行するValidatorManagerクラス。
+# Validatorクラスを格納し、まとめて実行するValidateManagerクラス。
 #********************************************************************************************
-class ValidatorManager
+class ValidateManager
 	#========================================================================================
 	# コンストラクタ
 	# @param	form		このインスタンスが検証を行うフォーム
@@ -45,7 +45,7 @@ class ValidatorManager
 		"""
 
 	#========================================================================================
-	# ValidatorManagerにValidationInfoオブジェクトを追加する。
+	# ValidateManagerにValidationInfoオブジェクトを追加する。
 	# @param	fieldName	検証フィールド名
 	# @param	msg			デフォルトエラーメッセージ
 	# @param	funcName	検証メソッド名
@@ -91,7 +91,7 @@ class ValidatorManager
 	_error = (errors) -> alert errors.join('\n')
 
 	#========================================================================================
-	# ValidatorManagerに登録されたすべての入力検証を実行する。
+	# ValidateManagerに登録されたすべての入力検証を実行する。
 	# @param	onvalidateerror		各検証エラー発生時のコールバック関数。フィールドエレメントとエラーメッセージを受け取る。
 	#								省略した場合は、対象フィールドのクラスに"validate-error"を追加する。
 	# @param	onvalidatesuccess	各検証成功時のコールバック関数。フィールドエレメントを受け取る。

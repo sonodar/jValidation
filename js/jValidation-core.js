@@ -10,7 +10,7 @@
 *********************************************************************************************
 */
 
-var ValidationInfo, ValidatorManager;
+var ValidateManager, ValidationInfo;
 
 ValidationInfo = (function() {
 
@@ -29,29 +29,29 @@ ValidationInfo = (function() {
 
 })();
 
-ValidatorManager = (function() {
+ValidateManager = (function() {
   var _error, _validateerror, _validatesuccess;
 
-  function ValidatorManager(form) {
+  function ValidateManager(form) {
     this.form = form;
     this.validations = [];
   }
 
-  ValidatorManager.prototype.toString = function() {
+  ValidateManager.prototype.toString = function() {
     return "{formName:" + this.form.name + ", formAction:" + this.form.action + ", validations: [" + (this.validations.join(',')) + "]}";
   };
 
-  ValidatorManager.prototype.add = function(fieldName, msg, funcName, params) {
+  ValidateManager.prototype.add = function(fieldName, msg, funcName, params) {
     return this.validations.push(new ValidationInfo(fieldName, msg, funcName, params));
   };
 
-  ValidatorManager.validationMethods = [];
+  ValidateManager.validationMethods = [];
 
-  ValidatorManager.registerValidation = function(name, func) {
+  ValidateManager.registerValidation = function(name, func) {
     return this.validationMethods[name] = func;
   };
 
-  ValidatorManager.prototype.isEmtpyField = function(fieldName) {
+  ValidateManager.prototype.isEmtpyField = function(fieldName) {
     var _ref, _ref1;
     return (((_ref = $(this.form.elements[fieldName])) != null ? (_ref1 = _ref.val()) != null ? _ref1.length : void 0 : void 0) != null) > 0;
   };
@@ -68,7 +68,7 @@ ValidatorManager = (function() {
     return alert(errors.join('\n'));
   };
 
-  ValidatorManager.prototype.validate = function(onvalidateerror, onvalidatesuccess, onsuccess, onerror, checkExists) {
+  ValidateManager.prototype.validate = function(onvalidateerror, onvalidatesuccess, onsuccess, onerror, checkExists) {
     var errors, field, msg, validation, validationMethod, _i, _len, _ref;
     if (onvalidateerror == null) {
       onvalidateerror = _validateerror;
@@ -119,6 +119,6 @@ ValidatorManager = (function() {
     return false;
   };
 
-  return ValidatorManager;
+  return ValidateManager;
 
 })();
